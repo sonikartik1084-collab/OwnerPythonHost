@@ -23,6 +23,9 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: '11076708'
+          accept-android-sdk-licenses: true
 
       - name: Install Android SDK
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
@@ -36,12 +39,15 @@ jobs:
         run: |
           mkdir -p project
           unzip -q OwnerPythonHost_Project.zip -d project
+
           SETTINGS_FILE="$(find project \( -name settings.gradle -o -name settings.gradle.kts \) -print -quit)"
+
           if [ -z "$SETTINGS_FILE" ]; then
             echo "settings.gradle not found in ZIP"
             find project -maxdepth 4 -type f
             exit 1
           fi
+
           echo "PROJECT_DIR=$(dirname "$SETTINGS_FILE")" >> "$GITHUB_ENV"
 
       - name: Build APK
